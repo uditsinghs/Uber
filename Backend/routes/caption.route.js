@@ -1,6 +1,7 @@
 import express from 'express';
 import { body } from 'express-validator';
-import { registerCaption } from '../controllers/caption.controller.js';
+import { getCaptionProfile, loginCaption, logoutCaption, registerCaption } from '../controllers/caption.controller.js';
+import { authCaption } from '../middlewares/auth.middleware.js';
 
 const router = express.Router();
 
@@ -30,5 +31,19 @@ router.post(
   ],
   registerCaption
 );
+
+router.post(
+  "/login",
+  [
+    body("email").isEmail().withMessage("Invalid Email"),
+    body("password")
+      .isLength({ min: 5 })
+      .withMessage("Password must be atleast 5 character long"),
+  ],
+  loginCaption
+);
+
+router.get('/profile',authCaption,getCaptionProfile)
+router.get('/logout', logoutCaption);
 
 export default router;

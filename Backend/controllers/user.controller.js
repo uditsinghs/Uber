@@ -152,6 +152,7 @@ export const getProfile = async (req, res) => {
 
 export const logout = async (req, res) => {
   try {
+    const token = req.cookies.token || req.headers.authorization?.split(" ")[1];
     // Clear the cookie
     res.clearCookie("token", {
       httpOnly: true,
@@ -160,7 +161,6 @@ export const logout = async (req, res) => {
     });
 
     // Add the token to the blacklist
-    const token = req.cookies.token || req.headers.authorization?.split(" ")[1];
     if (token) {
       await Blacklist.create({ token });
     } else {
