@@ -5,6 +5,7 @@ const app = express();
 import { connectDB } from "./db/db.js";
 import userRouter from "./routes/user.route.js";
 import cookieParser from "cookie-parser";
+import captionRouter from "./routes/caption.route.js";
 dotenv.config();
 app.use(express.json());
 app.use(cors({
@@ -15,6 +16,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser())
 
 app.use("/api/v1/user", userRouter);
+app.use('/api/v1/caption', captionRouter);
 connectDB();
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
