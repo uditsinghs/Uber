@@ -55,3 +55,59 @@ export const register = async (req, res) => {
     });
   }
 };
+
+export const login = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({
+      success: false,
+      errors: errors.array(),
+    });
+  }
+
+  try {
+    const { email, password } = req.body;
+
+    // Use findOne instead of find to get a single user document
+    const user = await User.findOne({ email }).select("+password");
+
+    if (!user) {
+      return res.status(401).json({
+        message: "Invalid credentials",
+        success: false,
+      });
+    }
+
+    const isMatch = await user.comparePassword(password);
+    if (!isMatch) {
+      return res.status(401).json({
+        message: "Invalid credentials",
+        success: false,
+      });
+    }
+
+    const token = user.generateToken();
+
+    // Send success response
+
+    return res.status(200).json({
+      message: "Login successful",
+      success: true,
+      user: {
+        id: user._id,
+        fullname: user.fullname,
+        email: user.email,
+      },
+      token,
+    });
+
+  } catch (error) {
+    console.error("Error in login:", error);
+    return res.status(500).json({
+      message: error.message || "Internal server error",
+      success: false,
+      error: error.message,
+    });
+
+  }
+};

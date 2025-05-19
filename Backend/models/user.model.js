@@ -42,8 +42,8 @@ userSchema.methods.generateToken = function () {
 };
 
 // Method to compare passwords
-userSchema.methods.comparePassword = async function (newPassword) {
-  return await bcryptjs.compare(newPassword, this.password);
+userSchema.methods.comparePassword = async function (password) {
+  return await bcryptjs.compare(password, this.password);
 };
 
 // Pre-save middleware to hash the password before saving
